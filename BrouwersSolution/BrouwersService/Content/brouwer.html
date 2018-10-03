@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Brouwer zoeken</title>
+</head>
+<body>
+    <h1>Brouwer zoeken</h1>
+    <form id="zoekForm">
+        <label>
+            Id:<input id="brouwerId" required type="number" min="1" autofocus/>
+        </label>
+        <input type="submit" value="Zoeken" />
+    </form>
+    <dl>
+        <dt>Naam</dt>
+        <dd id="naam"></dd>
+        <dt>Postcode</dt>
+        <dd id="postcode"></dd>
+    </dl>
+    <script>
+        document.getElementById("zoekForm").onsubmit = zoekBrouwer;
+        function zoekBrouwer() {
+            var request = new XMLHttpRequest();
+            request.open("GET", "/brewers/" + document.getElementById("brouwerId").value, true);
+            request.setRequestHeader("accept", "application/json");
+            request.onload = responseIsBinnengekomen;
+            request.send();
+            return false;
+        }
+        function responseIsBinnengekomen() {
+            switch (this.status) {
+                case 200:
+                    var brouwer = JSON.parse(this.responseText);
+                    document.getElementById("naam").innerHTML = brouwer.naam;
+                    document.getElementById("postcode").innerHTML = brouwer.postcode;
+                    break;
+                case 404:
+                    alert("Brouwer bestaat niet");
+                    break;
+                default:
+                    alert("Technisch probleem");
+            }
+        }
+    </script>
+</body>
+</html>
